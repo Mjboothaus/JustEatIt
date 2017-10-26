@@ -43,13 +43,16 @@ def login_required(test):
 
 @app.route('/')
 def home():
-    return render_template('pages/placeholder.home.html')
+    return render_template('pages/home.html')
 
 
 @app.route('/about')
 def about():
-    return render_template('pages/placeholder.about.html')
+    return render_template('pages/about.html')
 
+@app.route('/eat_map')
+def eat_map():
+    return render_template('pages/placeholder.eat_map.html')
 
 @app.route('/login')
 def login():

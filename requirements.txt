@@ -1,6 +1,7 @@
 Fabric
 Flask-SQLAlchemy
 Flask-WTF
+Flask-Login
 WTForms
 coverage
 # ecdsa
