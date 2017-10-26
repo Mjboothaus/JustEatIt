@@ -6,7 +6,7 @@ from flask import Flask, render_template, request
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
-from forms import *
+#from forms import *
 import os
 
 #----------------------------------------------------------------------------#
