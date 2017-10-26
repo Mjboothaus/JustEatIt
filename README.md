@@ -1,8 +1,5 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-
-
-
 ### Project Structure
 --------
 
@@ -64,21 +61,13 @@
           └── placeholder.home.html
   ```
 
-
-
-
-
-
-
-
-
 ### What's next?
 
 1. Using Heroku? Make sure you deactivate your virtualenv once you're done deploying: `deactivate`
-2. Need to reactivate? (1) Unix - `source venv/bin/activate` (2) Windows - `venv\scripts\activate`
+2. Need to reactivate? `source venv/bin/activate` 
 4. Add your Google Analytics ID to the *main.html* file
 5. Add a domain name to [Heroku](https://devcenter.heroku.com/articles/custom-domains) or PythonAnywhere via a [CNAME](http://en.wikipedia.org/wiki/CNAME_record) record
-5. DEVELOP YOUR APP - need [help](http://realpython.com)?
+5. DEVELOP YOUR APP - need [help](http://realpython.com)
 
 ### Learn More
 
@@ -86,5 +75,4 @@
 2. [PythonAnywhere - Help](https://www.pythonanywhere.com/help/)
 1. [Flask Documentation](http://flask.pocoo.org/docs/)
 2. [Flask Extensions](http://flask.pocoo.org/extensions/)
-1. [Real Python](http://www.realpythonfortheweb.com) :)
-
+1. [Real Python](http://www.realpythonfortheweb.com)
