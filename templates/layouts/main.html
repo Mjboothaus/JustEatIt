@@ -55,7 +55,7 @@
             <li {% if request.endpoint == 'home' %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
             <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a href="{{ url_for('about') }}">About</a></li>
             <li {% if request.endpoint == 'eat_map' %} class="active" {% endif %}><a href="{{ url_for('eat_map') }}">Eat Map</a></li>
-            <li class="dropdown">
+{#            <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown">Analytics <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a>Specify Allergy Profile</a></li>
@@ -66,7 +66,7 @@
                 <li><a>Placeholder 2 - TBC</a></li>
                 <li><a>Placeholder 3 - TBC</a></li>
               </ul>
-            </li>
+            </li>#}
           </ul>
           <ul class="nav navbar-nav pull-right">
             <li><a href="{{ url_for('register') }}">Signup</a></li>
