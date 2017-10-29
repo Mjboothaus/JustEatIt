@@ -27,6 +27,21 @@ Food allergies are:
 Thus, for my Capstone project, I have developed an app which allow a user to specify their allergy profile, 
 combined with recipe data from Yummly to produce TripAdvisor-like personalised recommendations.
 
+**ALlergy Profiles**
+
+[comment]: (https://www.fda.gov/food/resourcesforyou/consumers/ucm079311.htm)
+
+The eight foods identified by the FDA are:
+
+* Milk
+* Eggs
+* Fish (e.g., bass, flounder, cod)
+* Crustacean shellfish (e.g., crab, lobster, shrimp)
+* Tree nuts (e.g., almonds, walnuts, pecans)
+* Peanuts
+* Wheat
+* Soybeans
+
 **Functionality**
 
 For a users’ specific food allergies it will  Answering questions like:

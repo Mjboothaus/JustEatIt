@@ -48,3 +48,9 @@ class ForgotForm(FlaskForm):
     email = StringField(
         'Email', validators=[DataRequired(), Length(min=6, max=40)]
     )
+
+class SpecifyDietForm(FlaskForm):
+    dietary_types = [('Allergy', 'Allergy'), ('Belief', 'Belief'), ('Health', 'Health'),
+                     ('Preference', 'Preference'), ('Wellness', 'Wellness'),
+                     ('Other  specify', 'Other  specify')]
+

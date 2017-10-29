@@ -8,6 +8,7 @@ import logging
 from logging import Formatter, FileHandler
 from forms import *
 #import os
+import yummly_wrapper
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -49,6 +50,18 @@ def home():
 @app.route('/about')
 def about():
     return render_template('pages/about.html')
+
+@app.route('/top10')
+def top10():
+    allergy_profile = []
+    allergy_profile.append(['peanut']
+    allergy_profile.append(['peanut, egg'])
+    allergy_profile.append(['peanut, egg, milk'])
+
+    for profile in allergy_profile:
+        cuisines = get_top_cuisines(profile)
+
+    return render_template('pages/top10.html')
 
 @app.route('/eat_map')
 def eat_map():
