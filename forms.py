@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import Form as FlaskForm        # in later versions it is actually FlaskForm
 from wtforms import PasswordField, StringField
 from wtforms.validators import DataRequired, EqualTo, Length
 

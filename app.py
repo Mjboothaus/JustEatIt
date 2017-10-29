@@ -54,7 +54,7 @@ def about():
 @app.route('/top10')
 def top10():
     allergy_profile = []
-    allergy_profile.append(['peanut']
+    allergy_profile.append(['peanut'])
     allergy_profile.append(['peanut, egg'])
     allergy_profile.append(['peanut, egg, milk'])
 
