@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField
+from wtforms import PasswordField, StringField, SelectField
 from wtforms.validators import DataRequired, EqualTo, Length
 
 # Set your classes here.
@@ -49,8 +49,16 @@ class ForgotForm(FlaskForm):
         'Email', validators=[DataRequired(), Length(min=6, max=40)]
     )
 
-class SpecifyDietForm(FlaskForm):
+class SpecifyProfileForm(FlaskForm):
     dietary_types = [('Allergy', 'Allergy'), ('Belief', 'Belief'), ('Health', 'Health'),
                      ('Preference', 'Preference'), ('Wellness', 'Wellness'),
                      ('Other  specify', 'Other  specify')]
 
+    allergy_profiles = [['milk'], ['egg'], ['peanut'], ['milk', 'egg']]        # TODO: Populate dynamically?
+
+    profile_list = []
+    for i, profile in enumerate(allergy_profiles):
+        profile_list.append((i+1, profile))
+
+    profile = SelectField(label='profile_choice', description="Please choose an allergy profile", default=1,
+                      choices=profile_list)

@@ -46,6 +46,10 @@ def login_required(test):
 def home():
     return render_template('pages/home.html')
 
+@app.route('/allergy_profile')
+def allergy_profile():
+    form = SpecifyProfileForm(request.form)
+    return render_template('forms/allergy_profile.html', form=form)
 
 @app.route('/about')
 def about():
