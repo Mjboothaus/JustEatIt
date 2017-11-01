@@ -85,8 +85,6 @@
     <!-- Begin page content -->
     <main id="content" role="main" class="container">
 
-        <img width="975" height="650" src="./static/img/WORLD_HL.jpg">
-
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
@@ -98,7 +96,8 @@
             {% endif %}
         {% endwith %}
 
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
 
     </main>
 
