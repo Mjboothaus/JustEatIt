@@ -1,3 +1,14 @@
+**Yummly API Info**
+
+https://developer.yummly.com
+
+**Data Size**
+
+2.1 M recipes
+
+Recipe attributes:
+[comment]: <> TODO: Finalise this.
+
 **Yummly Attribution Requirements**
 
 Whenever you display information obtained from the Yummly API to your users, 

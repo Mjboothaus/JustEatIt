@@ -1,6 +1,6 @@
 **Specification**
  
-Splash screen 
+Splash screen [optional]
 
 [comment]: # (Can you use Country/World food pics from presentation in the app - with attribution)   
 
@@ -27,7 +27,7 @@ Food allergies are:
 Thus, for my Capstone project, I have developed an app which allow a user to specify their allergy profile, 
 combined with recipe data from Yummly to produce TripAdvisor-like personalised recommendations.
 
-**ALlergy Profiles**
+**Allergy Profiles**
 
 [comment]: (https://www.fda.gov/food/resourcesforyou/consumers/ucm079311.htm)
 
