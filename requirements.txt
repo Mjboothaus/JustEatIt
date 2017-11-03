@@ -4,6 +4,7 @@ Flask-WTF
 Flask-Login
 WTForms
 coverage
+yummly
 # ecdsa
 # paramiko
 # pycrypto
