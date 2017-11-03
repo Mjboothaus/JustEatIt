@@ -54,12 +54,12 @@
                 <ul class="nav navbar-nav">
                     <li {% if request.endpoint == 'home' %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a>
                     </li>
-                    <li {% if request.endpoint == 'allergy_info' %} class="active" {% endif %}><a
-                            href="{{ url_for('allergy_info') }}">Allergy info</a></li>
                     <li {% if request.endpoint == 'eat_map' %} class="active" {% endif %}><a
                             href="{{ url_for('eat_map') }}">Eat Map</a></li>
                     <li {% if request.endpoint == 'bokeh' %} class="active" {% endif %}><a
                             href="{{ url_for('bokeh') }}">Visualisation</a></li>
+                    <li {% if request.endpoint == 'allergy_info' %} class="active" {% endif %}><a
+                            href="{{ url_for('allergy_info') }}">Allergy info</a></li>
                     <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a
                             href="{{ url_for('about') }}">About</a></li>
 

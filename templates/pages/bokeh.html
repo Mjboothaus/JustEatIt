@@ -7,17 +7,12 @@
         <h1>Visualisation</h1>
     </div>
 
-    <h4>Bokeh plot goes here</h4>
 
+    <div id="container1" style="border:1px blue; width: 700px; height: 475px; position: relative;">{{ plot_div|safe }}</div>
 
-
-    <div id="container1" style="border:1px blue; width: 700px; height: 475px; position: relative;"></div>
-
-
-
-    {#<script> var series = {{ country_data|tojson|safe }};#}
-
-
+    {{ js_resources|indent(4)|safe }}
+    {{ css_resources|indent(4)|safe }}
+    {{ plot_script|indent(4)|safe }}
 
 {% endblock %}
 

@@ -57,9 +57,5 @@ def get_recipes(search_terms):
         recipe = client.recipe(match.id)
 
     except:
-        return render_template('error_recipe.html')
+        pass
 
-    return render_template('display_recipe.html', recipe_name=recipe.name,
-                           recipe_id=recipe.id,
-                           recipe_rating=recipe.rating,
-                           ingred_list=recipe.ingredientLines)

@@ -25,7 +25,7 @@
     <script src="/static/js/components/topojson/topojson.js"></script>
     {#    <script src="../../dist/datamaps.world.js"></script>#}
 
-    <script> var series = {{ country_data|tojson|safe }};
+    <script> var series = {{ country_data|safe }};
 
 
     // Datamaps expect data in format:
@@ -70,7 +70,7 @@
         geographyConfig: {
             borderColor: '#DEDEDE',
             highlightBorderWidth: 2,
-            placeholder.eat_map.htmlplaceholder.eat_map.html       // don't change color on mouse hover
+            placeholder: 'eat_map.html',
         highlightFillColor: function (geo) {
             return geo['fillColor'] || '#F5F5F5';
         },
@@ -83,12 +83,10 @@
                 return;
             }
             // tooltip content
-            return ['
-            < div class = "hoverinfo" > ',
+            return ['<div class = "hoverinfo" > ',
                 '<strong>', geo.properties.name, '</strong>',
                 '<br>Allergy index: <strong>', data.numberOfThings, '</strong>',
-                '
-                < /div>'].join('');
+                '</div>'].join('');
         }
     }
     })

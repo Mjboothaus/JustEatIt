@@ -5,6 +5,8 @@ Flask-Login
 WTForms
 coverage
 yummly
+holoviews
+
 # ecdsa
 # paramiko
 # pycrypto
