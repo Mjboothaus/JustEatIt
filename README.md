@@ -61,15 +61,14 @@
           └── placeholder.home.html
   ```
 
-### What's next?
+### Deployment Notes
 
 1. Using Heroku? Make sure you deactivate your virtualenv once you're done deploying: `deactivate`
 2. Need to reactivate? `source venv/bin/activate` 
-4. Add your Google Analytics ID to the *main.html* file
-5. Add a domain name to [Heroku](https://devcenter.heroku.com/articles/custom-domains) or PythonAnywhere via a [CNAME](http://en.wikipedia.org/wiki/CNAME_record) record
-5. DEVELOP YOUR APP - need [help](http://realpython.com)
+3. Add your Google Analytics ID to the *main.html* file
+4. Add a domain name to [Heroku](https://devcenter.heroku.com/articles/custom-domains) or PythonAnywhere via a [CNAME](http://en.wikipedia.org/wiki/CNAME_record) record
 
-### Learn More
+### References
 
 1. [Getting Started with Python on Heroku](https://devcenter.heroku.com/articles/python)
 2. [PythonAnywhere - Help](https://www.pythonanywhere.com/help/)
