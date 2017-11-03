@@ -1,4 +1,4 @@
-{% extends 'layouts/form.html' %}
+{% extends 'layouts/main.html' %}
 {% block title %}Choose allergy profile{% endblock %}
 {% block content %}
     <form method="post" class="form form-allergy-profile">
@@ -6,10 +6,11 @@
                 class="fa fa-home pull-right"></i></a></h3>
         <div class="row">
             <h4>Select your allergy profile from the dropdown...</h4>
-        <div class="col-sm-6">{{ form.profile(class_="form-control") }}  <br>       <input type="submit" value="Submit" class="btn btn-lg btn-primary btn-block" disabled>
+            <div class="col-sm-6">{{ form.profile(class_="form-control") }} <br>
+                <input type="submit" value="Submit" class="btn btn-lg btn-primary btn-block" disabled>
 
-        </div>
-        <div class="col-sm-6"></div>
+            </div>
+            <div class="col-sm-6"></div>
 
         </div>
     </form>
