@@ -7,6 +7,7 @@ from flask import Flask, render_template, request, url_for
 import logging
 from logging import Formatter, FileHandler
 from forms import *
+import os
 
 import yummly_wrapper
 
@@ -129,12 +130,14 @@ def top10():
 
 @app.route('/eat_map')
 def eat_map():
+    # Grabs the folder where the script runs
+    basedir = os.path.abspath(os.path.dirname(__file__))
+
     APP_STATIC = os.path.join(basedir, 'static')
 
-    path = APP_STATIC + 'data/country_info.csv'
-    print path
+    path = APP_STATIC + '/data/country_info.csv'
 
-    country_codes = pd.read_csv(path[1:len(path)])
+    country_codes = pd.read_csv(path)
 
     country_dict = country_codes.to_dict()
 
