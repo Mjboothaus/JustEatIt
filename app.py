@@ -2,7 +2,7 @@
 # Imports
 # ----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -129,6 +129,15 @@ def top10():
 
 @app.route('/eat_map')
 def eat_map():
+    APP_STATIC = os.path.join(basedir, 'static')
+
+    path = APP_STATIC + 'data/country_info.csv'
+    print path
+
+    country_codes = pd.read_csv(path[1:len(path)])
+
+    country_dict = country_codes.to_dict()
+
     country_data = [
         ["BLR", 75], ["BLZ", 43], ["RUS", 50], ["RWA", 88], ["SRB", 21], ["TLS", 43],
         ["REU", 21], ["TKM", 19], ["TJK", 60], ["ROU", 4], ["TKL", 44], ["GNB", 38],
@@ -181,7 +190,6 @@ def internal_error(error):
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
-
 
 if not app.debug:
     file_handler = FileHandler('error.log')

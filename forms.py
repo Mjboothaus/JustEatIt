@@ -55,7 +55,8 @@ class SpecifyProfileForm(FlaskForm):
                      ('Preference', 'Preference'), ('Wellness', 'Wellness'),
                      ('Other  specify', 'Other  specify')]
 
-    allergy_profiles = [['milk'], ['egg'], ['peanut'], ['milk', 'egg']]  # TODO: Populate dynamically?
+    allergy_profiles = [['milk'], ['egg'], ['peanut'], ['milk', 'egg'],
+                        ['milk, peanut'], ['egg, peanut'], ['egg, milk, peanut']]  # TODO: Populate dynamically?
 
     profile_list = []
     for i, profile in enumerate(allergy_profiles):
