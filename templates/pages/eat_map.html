@@ -71,30 +71,34 @@
             borderColor: '#DEDEDE',
             highlightBorderWidth: 2,
             placeholder: 'eat_map.html',
-        highlightFillColor: function (geo) {
-            return geo['fillColor'] || '#F5F5F5';
-        },
-        // only change border
-        highlightBorderColor: '#B7B7B7',
-        // show desired information in tooltip
-        popupTemplate: function (geo, data) {
-            // don't show tooltip if country don't present in dataset
-            if (!data) {
-                return;
+            highlightFillColor: function (geo) {
+                return geo['fillColor'] || '#F5F5F5';
+            },
+            // only change border
+            highlightBorderColor: '#B7B7B7',
+            // show desired information in tooltip
+            popupTemplate: function (geo, data) {
+                // don't show tooltip if country don't present in dataset
+                if (!data) {
+                    return;
+                }
+                // tooltip content
+                return ['<div class = "hoverinfo" > ',
+                    '<strong>', geo.properties.name, '</strong>',
+                    '<br>Allergy index: <strong>', data.numberOfThings, '</strong>',
+                    '</div>'].join('');
             }
-            // tooltip content
-            return ['<div class = "hoverinfo" > ',
-                '<strong>', geo.properties.name, '</strong>',
-                '<br>Allergy index: <strong>', data.numberOfThings, '</strong>',
-                '</div>'].join('');
         }
-    }
     })
     ;
     </script>
 
+    <div>
+        Recipe data courtesy of <a href="https://www.yummly.com">Yummly.com</a>
+    </div>
 
 {% endblock %}
+
 
 
 {#
