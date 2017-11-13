@@ -73,6 +73,10 @@ def about():
     return render_template('pages/about.html')
 
 
+@app.route('/version')
+def version():
+    return render_template('pages/version.html')
+
 @app.route('/allergy_info')
 def allergy_info():
     return render_template('pages/allergy_info.html')

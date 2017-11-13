@@ -62,7 +62,8 @@
                             href="{{ url_for('allergy_info') }}">Allergy info</a></li>
                     <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a
                             href="{{ url_for('about') }}">About</a></li>
-
+                    <li {% if request.endpoint == 'version' %} class="active" {% endif %}><a
+                            href="{{ url_for('version') }}">Version</a></li>
                     {#            <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown">Analytics <b class="caret"></b></a>
               <ul class="dropdown-menu">
