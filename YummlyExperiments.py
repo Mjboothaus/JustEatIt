@@ -4,17 +4,7 @@ import os
 
 # ### Yummly set-up
 
-import yummly_wrapper
-
-# # default option values
-#
-# TIMEOUT = 45.0
-# RETRIES = 3
-#
-# # Yummly mjboothaus Account: Hackathon Plan - Access granted 24 July 2017
-#
-# API_ID = 'b4f167ed'
-# API_KEY = 'f69184af19beb4b76e7b7b1984046581'
+from yummly_settings import TIMEOUT, RETRIES, API_ID, API_KEY
 
 # ### Import Country / Cuisine mappings
 
@@ -164,31 +154,3 @@ allergy_indices = calculate_cuisine_allergy_indices(selected_profile, cuisine_id
 
 
 # e.g. allergy_index = calculate_cuisine_allergy_indices('milk, egg', ['cuisine^cuisine-chinese'])
-
-
-
-###### -- Unused code ---------------------------------------------------------
-
-# def search_yummly(query, cuisine_list, maxResult):
-#     try:
-#         search_params = {
-#             'q': query,
-#             'allowedCuisine': 'cuisine^' + cuisine_list,  # Need to generalise to multiple cuisines
-#             'maxResult': maxResult
-#         }
-#
-#         client = yummly.Client(api_id=API_ID, api_key=API_KEY, timeout=TIMEOUT, retries=RETRIES)
-#
-#         search_results = client.search(**search_params)
-#
-#         matches = search_results.matches[0]
-#
-#         recipe_list = []
-#         for match in matches:
-#             recipe = client.recipe(match.id)
-#             recipe_list.append(recipe)
-#
-#     except:
-#         pass
-#
-#     return recipe_list
