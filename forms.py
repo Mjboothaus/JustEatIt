@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SelectField
+from wtforms import PasswordField, StringField, SelectField, SubmitField
 from wtforms.validators import DataRequired, EqualTo, Length
 
 
@@ -67,3 +67,5 @@ class SpecifyProfileForm(FlaskForm):
 
     profile = SelectField(label='profile_choice', description="Please choose an allergy profile", default=1,
                           choices=profile_list)
+
+    submit = SubmitField('Submit')

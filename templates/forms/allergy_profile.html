@@ -4,14 +4,12 @@
     <form method="post" class="form form-allergy-profile">
         <h3 class="form-heading">Allergy Profile <a href="{{ url_for('home') }}" title="Back to homepage"><i
                 class="fa fa-home pull-right"></i></a></h3>
-        <h4>Select your allergy profile from the dropdown...</h4>
+        <h4>Select your allergy profile from the dropdown and press "Just Eat It"</h4>
         <div class="row">
             <div class="col-sm-6">{{ form.profile(class_="form-control") }} <br>
-                <input type="submit" value="Submit" class="btn btn-lg btn-primary btn-block" disabled>
-
+                <input type="submit" value="Just Eat It..." class="btn btn-lg btn-primary btn-block">
             </div>
             <div class="col-sm-6"></div>
-
         </div>
     </form>
 {% endblock %}

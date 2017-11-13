@@ -62,10 +62,14 @@ def home():
     return render_template('pages/home.html')
 
 
-@app.route('/allergy_profile')
+@app.route('/allergy_profile', methods=['GET', 'POST'])
 def allergy_profile():
     form = SpecifyProfileForm(request.form)
-    return render_template('forms/allergy_profile.html', form=form)
+    if request.method == 'POST':
+        choice = form.profile.data
+        return render_template('pages/eat_map.html', allergy_profile_choice=choice)
+    else:
+        return render_template('forms/allergy_profile.html', form=form)
 
 
 @app.route('/about')
@@ -138,34 +142,9 @@ def eat_map():
     # Grabs the folder where the script runs
     basedir = os.path.abspath(os.path.dirname(__file__))
     APP_STATIC = os.path.join(basedir, 'static')
-    csv_filepath = APP_STATIC + '/data/country_info.csv'
 
-    seed(42)      # Set a constant starting seed
 
-    country_codes = pd.read_csv(csv_filepath, header=0, names={'Country', 'Code'})
 
-    country_codes['AllergyIndex'] = country_codes['Code'].apply(lambda x: randint(0, len(country_codes)))
-
-    country_data_for_map = country_codes[['Code', 'AllergyIndex']].values.tolist()
-
-    # country_data = [
-    #     ["BLR", 75], ["BLZ", 43], ["RUS", 50], ["RWA", 88], ["SRB", 21], ["TLS", 43],
-    #     ["REU", 21], ["TKM", 19], ["TJK", 60], ["ROU", 4], ["TKL", 44], ["GNB", 38],
-    #     ["GUM", 67], ["GTM", 2], ["SGS", 95], ["GRC", 60], ["GNQ", 57], ["GLP", 53],
-    #     ["JPN", 59], ["GUY", 24], ["GGY", 4], ["GUF", 21], ["GEO", 42], ["GRD", 65],
-    #     ["GBR", 14], ["GAB", 47], ["SLV", 15], ["GIN", 19], ["GMB", 63], ["GRL", 56],
-    #     ["ERI", 57], ["MNE", 93], ["MDA", 39], ["MDG", 71], ["MAF", 16], ["MAR", 8],
-    #     ["MCO", 25], ["UZB", 81], ["MMR", 21], ["MLI", 95], ["MAC", 33], ["MNG", 93],
-    #     ["MHL", 15], ["MKD", 52], ["MUS", 19], ["MLT", 69], ["MWI", 37], ["MDV", 44],
-    #     ["MTQ", 13], ["MNP", 21], ["MSR", 89], ["MRT", 20], ["IMN", 72], ["UGA", 59],
-    #     ["TZA", 62], ["MYS", 75], ["MEX", 80], ["ISR", 77], ["FRA", 54], ["IOT", 56],
-    #     ["SHN", 91], ["FIN", 51], ["FJI", 22], ["FLK", 4], ["FSM", 69], ["FRO", 70],
-    #     ["NIC", 66], ["NLD", 53], ["NOR", 7], ["NAM", 63], ["VUT", 15], ["NCL", 66],
-    #     ["NER", 34], ["NFK", 33], ["NGA", 45], ["AUS", 96], ["NPL", 21], ["NRU", 13],
-    #     ["NIU", 6], ["COK", 19], ["XKX", 32], ["CIV", 27], ["CHE", 65], ["COL", 64],
-    #     ["CHN", 16], ["CMR", 70], ["CHL", 15], ["CCK", 85], ["CAN", 76], ["COG", 20],
-    #     ["CAF", 93], ["COD", 36], ["CZE", 77], ["CYP", 65], ["CXR", 14], ["CRI", 31],
-    #     ["CUW", 67], ["CPV", 63], ["CUB", 40], ["SWZ", 58], ["SYR", 96], ["SXM", 31]]
 
     return render_template('pages/eat_map.html', country_data=country_data_for_map)
 
@@ -225,3 +204,38 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
 '''
+
+# ----------------------------------------------------------------------------#
+# Left over prototyping code
+# ----------------------------------------------------------------------------#
+
+
+## This was code to put random values into the country data array for the country map
+
+# csv_filepath = APP_STATIC + '/data/country_info.csv'
+
+# seed(42)      # Set a constant starting seed
+
+# country_codes = pd.read_csv(csv_filepath, header=0, names={'Country', 'Code'})
+
+# country_codes['AllergyIndex'] = country_codes['Code'].apply(lambda x: randint(0, len(country_codes)))
+
+# country_data_for_map = country_codes[['Code', 'AllergyIndex']].values.tolist()
+# country_data = [
+#     ["BLR", 75], ["BLZ", 43], ["RUS", 50], ["RWA", 88], ["SRB", 21], ["TLS", 43],
+#     ["REU", 21], ["TKM", 19], ["TJK", 60], ["ROU", 4], ["TKL", 44], ["GNB", 38],
+#     ["GUM", 67], ["GTM", 2], ["SGS", 95], ["GRC", 60], ["GNQ", 57], ["GLP", 53],
+#     ["JPN", 59], ["GUY", 24], ["GGY", 4], ["GUF", 21], ["GEO", 42], ["GRD", 65],
+#     ["GBR", 14], ["GAB", 47], ["SLV", 15], ["GIN", 19], ["GMB", 63], ["GRL", 56],
+#     ["ERI", 57], ["MNE", 93], ["MDA", 39], ["MDG", 71], ["MAF", 16], ["MAR", 8],
+#     ["MCO", 25], ["UZB", 81], ["MMR", 21], ["MLI", 95], ["MAC", 33], ["MNG", 93],
+#     ["MHL", 15], ["MKD", 52], ["MUS", 19], ["MLT", 69], ["MWI", 37], ["MDV", 44],
+#     ["MTQ", 13], ["MNP", 21], ["MSR", 89], ["MRT", 20], ["IMN", 72], ["UGA", 59],
+#     ["TZA", 62], ["MYS", 75], ["MEX", 80], ["ISR", 77], ["FRA", 54], ["IOT", 56],
+#     ["SHN", 91], ["FIN", 51], ["FJI", 22], ["FLK", 4], ["FSM", 69], ["FRO", 70],
+#     ["NIC", 66], ["NLD", 53], ["NOR", 7], ["NAM", 63], ["VUT", 15], ["NCL", 66],
+#     ["NER", 34], ["NFK", 33], ["NGA", 45], ["AUS", 96], ["NPL", 21], ["NRU", 13],
+#     ["NIU", 6], ["COK", 19], ["XKX", 32], ["CIV", 27], ["CHE", 65], ["COL", 64],
+#     ["CHN", 16], ["CMR", 70], ["CHL", 15], ["CCK", 85], ["CAN", 76], ["COG", 20],
+#     ["CAF", 93], ["COD", 36], ["CZE", 77], ["CYP", 65], ["CXR", 14], ["CRI", 31],
+#     ["CUW", 67], ["CPV", 63], ["CUB", 40], ["SWZ", 58], ["SYR", 96], ["SXM", 31]]
