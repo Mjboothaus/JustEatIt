@@ -19,12 +19,14 @@ import logging
 
 import yummly
 from yummly_settings import TIMEOUT, RETRIES, API_ID, API_KEY
+from yummly.models import MetaCuisine
 
 ### Bokeh imports
 
 from bokeh.embed import components
 from bokeh.resources import INLINE
 from bokeh.plotting import figure
+from bokeh.charts import Bar
 
 ### Unused
 
@@ -92,19 +94,15 @@ def about():
 def version():
     return render_template('pages/version.html')
 
+
 @app.route('/allergy_info')
 def allergy_info():
     return render_template('pages/allergy_info.html')
 
 
-@app.route('/bokeh')
-def bokeh():
-
-    # TODO: Implement another viz -- for now maybe Top 10 countries & allergy index
-
-    ## Get any control input from page
-
-    # stock_ticker = request.form.get('stock_ticker')
+@app.route('/top10')
+def top10():
+    # TODO: Can you pass the data through the function argument?
 
     ## Load any reference data e.g. list of cuisine / country
 
@@ -117,11 +115,32 @@ def bokeh():
         ## Get Yummly data - API call
         # output to static HTML file
 
-        # PLACEHOLDER: circle renderer with a size, color, and alpha
+        # top15_destinations = country_data_plt_df.sort_values('allergy_index', ascending=False).iloc[0:15]
 
-        plot = figure(plot_width=400, plot_height=400)
-        plot.circle([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], size=20, color="navy", alpha=0.5)
-        script, div = components(plot)
+        top15_list = [[u'Egypt', 'EGY', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'Algeria', 'DZA', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'Morocco', 'MAR', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'South Sudan', 'SSD', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'Western Sahara', 'ESH', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'Malta', 'MLT', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'Sudan', 'SDN', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'Tunisia', 'TUN', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'Libya', 'LBY', u'Moroccan', u'cuisine^cuisine-moroccan', 91.8],
+                      [u'India', 'IND', u'Indian', u'cuisine^cuisine-indian', 90.3],
+                      [u'Maldives', 'MDV', u'Indian', u'cuisine^cuisine-indian', 90.3],
+                      [u'Pakistan', 'PAK', u'Indian', u'cuisine^cuisine-indian', 90.3],
+                      [u'Mauritius', 'MUS', u'Indian', u'cuisine^cuisine-indian', 90.3],
+                      [u'Nepal', 'NPL', u'Indian', u'cuisine^cuisine-indian', 90.3],
+                      [u'Bangladesh', 'BGD', u'Indian', u'cuisine^cuisine-indian', 90.3]]
+
+        top15_list_df = pd.DataFrame(top15_list)
+        top15_list_df.columns = ['Country', 'Code', 'Cuisines', 'searchValue', 'allergy_index']
+
+        plot_top15 = Bar(top15_list_df, label='Country', values='allergy_index', legend=False)
+
+        plot_top15.add_labels('y', 'Allergy Index')
+
+        script, div = components(plot_top15)
 
     except Exception as e:
         return render_template('errors/bokeh_error.html', error=e.message)
@@ -129,32 +148,18 @@ def bokeh():
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
 
-    return render_template('pages/bokeh.html',
+    return render_template('pages/top10.html',
                            plot_script=script,
                            plot_div=div,
                            js_resources=js_resources,
                            css_resources=css_resources)
 
 
-
-# @app.route('/top10')
-# def top10():
-#     allergy_profile = []
-#     allergy_profile.append(['peanut'])
-#     allergy_profile.append(['peanut, egg'])
-#     allergy_profile.append(['peanut, egg, milk'])
-#
-#     for profile in allergy_profile:
-#         cuisines = get_top_cuisines(profile)
-#
-#     return render_template('pages/top10.html')
-
-
 @app.route('/eat_map')
 def eat_map():
-
     # ### Import Country / Cuisine mappings
 
+    """
     def country_belongs_to_cusine(cuisine_type, cuisines):
         if cuisine_type in cuisines:
             return True
@@ -169,7 +174,6 @@ def eat_map():
             return e.message
 
     def import_country_and_cuisine_info(xls_filepath, API_ID):
-
         # ### Extract recognised cuisine-types into dataframe
 
         client = connect_to_yummly()
@@ -180,96 +184,155 @@ def eat_map():
             pass
             # TODO: Should pass an error back to webpage if unable to connect to Yummly.
 
-        cuisine_df = pd.DataFrame(cuisine_list)
+        undefined_cuisine = MetaCuisine(
+            **{'name': u'Undefined', 'searchValue': u'cuisine^cuisine-undefined', 'id': u'cuisine-undefined',
+               'type': u'cuisine', 'localesAvailableIn': [u'en-US'], 'description': u'Undefined'})
 
-        print str(len(cuisine_list)) + ' recognised cuisine types'
+        cuisine_df = pd.DataFrame(cuisine_list + [undefined_cuisine])
 
-        country_info = pd.read_excel(xls_filepath, sheetname='Export',
-                                     names={'Country', 'Code', 'Region', 'Cuisines'})
+        print str(len(cuisine_list) + 1) + ' recognised cuisine types (including Undefined type)'
+
+        country_info_df = pd.read_excel(xls_filepath, sheetname='Export')
+
+        country_info_df = country_info_df.drop('Cuisine_v2 [allowing multiple cuisine per country]', axis=1)
 
         for cuisine in cuisine_df.name:
             if cuisine == 'Kid-Friendly':
                 cuisine = 'Undefined'
-            country_info[cuisine] = country_info['Cuisines'].apply(lambda x: country_belongs_to_cusine(cuisine, x))
+            country_info_df[cuisine] = country_info_df['Cuisines'].apply(
+                lambda x: country_belongs_to_cusine(cuisine, x))
 
         all_cuisines = []
         for cuisine in cuisine_df.name:
-            if cuisine == 'Kid-Friendly':
+            if cuisine == 'Kid-Friendly':  # Can ignore - just skipped in lookup
                 cuisine = 'Undefined'
-            cuisine_countries = [cuisine]
-            tmp_df = country_info[country_info[cuisine] == True]
-            cuisine_countries.append(tmp_df['Country'].values.tolist())
+
+            # print cuisine_df['searchValue'][cuisine_df['name']==cuisine].values.tolist()
+            # print [cuisine]
+
+            if cuisine != 'Undefined':
+                cuisine_countries = cuisine_df['searchValue'][cuisine_df['name'] == cuisine].values.tolist()
+            else:
+                cuisine_countries = ['Undefined']
+            # cuisine_countries = [cuisine]
+
+            tmp_df = country_info_df[country_info_df[cuisine] == True]
+
+            cuisine_countries.append(tmp_df['Code'].values.tolist())
+            # cuisine_countries.append(tmp_df['Country'].values.tolist())
+
+            # print cuisine_countries
             all_cuisines.append(cuisine_countries)
 
-        cuisine_by_country_df = pd.DataFrame(all_cuisines)
+        cuisine_by_country_df = pd.DataFrame.from_records(all_cuisines)
 
-        # e.g. cuisine_df['searchValue'][cuisine_df['description'] == 'American'][0]
+        cuisine_by_country_df.columns = ['searchValue', 'country_list']
+
+        cuisine_id = cuisine_df['searchValue'].values.tolist()
 
         return cuisine_df, cuisine_by_country_df
 
-    # Note: Working with cuisine ID column as this maps directly to the searchValue column
+        # Note: Working with cuisine ID column as this maps directly to the searchValue column by adding the suffix
+        #       'cuisine^'
+
+        def get_number_of_recipes_for_cuisine(cuisine_id, allergens):
+            n_recipes = 0
+            try:
+                if allergens == '':
+                    search_params = {
+                        'q': '',
+                        'allowedCuisine': cuisine_id
+                    }
+                else:
+                    search_params = {
+                        'q': '',
+                        'allowedCuisine': cuisine_id
+                    }
+
+                    allergen_list = []
+                    for allergen in allergens.split(','):
+                        allergen_list.append(allergen.lstrip().rstrip())
+                    search_params['excludedIngredient'] = allergen_list
+
+                client = yummly.Client(api_id=API_ID, api_key=API_KEY, timeout=TIMEOUT, retries=RETRIES)
+                search_results = client.search(**search_params)
+                n_recipes = search_results.totalMatchCount
+
+            except Exception as e:
+                n_recipes = e.message  # error value
+                pass
+
+            return n_recipes
+
+        # Example URL query
+
+        # https://www.yummly.com/recipes?allowedCuisine=cuisine%5Ecuisine-american&excludedIngredient=egg&excludedIngredient=milk
+
+        # For each cuisine-type - A = query total #recipes and B = total #recipes without all allergen ingredients (in allergy profile)
+
+        # Calculate allergy (quotient) index as B/A. If there are a lot of recipes in that cuisine type without allergens
+        # then B is approximately equal to A and the quotient is close to 100% ( => allergy-friendly cuisine).
+
+        # Similarly could calculate a 2nd metric where (for more than one allergen in profile) you drop one of the allergens
+        # at a time from the allergy profile to see the change/impact. The Eat Map could toggle between STRICT and RELAXED mode.
 
 
-    def get_number_of_recipes_for_cuisine(cuisine_id, allergens):
-        n_recipes = 0
-        try:
-            if allergens == '':
-                search_params = {
-                    'q': '',
-                    'allowedCuisine': cuisine_id
-                }
-            else:
-                search_params = {
-                    'q': '',
-                    'allowedCuisine': cuisine_id
-                }
+        def calculate_cuisine_allergy_indices(allergy_profile, cuisine_list):
+            allergy_index = []
+            ignore_cuisine = ['cuisine^cuisine-kid-friendly',
+                              'cuisine^cuisine-southern',
+                              'cuisine^cuisine-southwestern',
+                              'cuisine^cuisine-barbecue-bbq',
+                              'cuisine^cuisine-cajun',
+                              'cuisine^cuisine-undefined']
+            for cuisine in cuisine_list:
+                if cuisine not in ignore_cuisine:
+                    # First query total number of recipes for the cuisine
+                    # print cuisine
+                    n_recipes_total = get_number_of_recipes_for_cuisine(cuisine, allergens='')
+                    # print n_recipes_total
+                    # Then query number of recipes without allergens
+                    n_recipes_allowed = get_number_of_recipes_for_cuisine(cuisine, allergy_profile)
+                    # print n_recipes_allowed
+                    allergy_index.append((cuisine, round(100. * float(n_recipes_allowed) / float(n_recipes_total), 1)))
 
-                allergen_list = []
-                for allergen in allergens.split(','):
-                    allergen_list.append(allergen.lstrip().rstrip())
-                search_params['excludedIngredient'] = allergen_list
+            allergy_index.append(('cuisine^cuisine-undefined', 0.0))
 
-            client = yummly.Client(api_id=API_ID, api_key=API_KEY, timeout=TIMEOUT, retries=RETRIES)
-            search_results = client.search(**search_params)
-            n_recipes = search_results.totalMatchCount
+            return allergy_index
 
-        except Exception as e:
-            n_recipes = e.message  # error value
-            pass
+        allergy_index = calculate_cuisine_allergy_indices(allergy_profiles[3][0], cuisine_id)
+        # allergy_index = calculate_cuisine_allergy_indices('milk, egg', ['cuisine^cuisine-chinese'])
 
-        return n_recipes
+        # TODO: Need to pass in the chosen allergy profile
 
-    # Example URL query
 
-    # https://www.yummly.com/recipes?allowedCuisine=cuisine%5Ecuisine-american&excludedIngredient=egg&excludedIngredient=milk
+        allergy_index_df = pd.DataFrame(allergy_index)
+        allergy_index_df.columns = ['searchValue', 'allergy_index']
 
-    ### Allergy index calculation notes
+        def map_cuisine_name_to_searchValue(cuisine_name, cuisine_df):
+            try:
+                return cuisine_df['searchValue'][cuisine_df['name'] == cuisine_name].values.tolist()[0]
+            except:
+                return 'Error: ' + cuisine_name
 
-    # For each cuisine-type - A = query total #recipes and B = total #recipes without all allergen ingredients (in allergy profile)
+        def lookup_allergy_index_from_searchValue(searchValue, allergy_index_df):
+            try:
+                return \
+                    allergy_index_df['allergy_index'][allergy_index_df['searchValue'] == searchValue].values.tolist()[0]
+            except:
+                return 'Error: ' + searchValue
 
-    # Calculate allergy (quotient) index as B/A. If there are a lot of recipes in that cuisine type without allergens
-    # then B is approximately equal to A and the quotient is close to 100% ( => allergy-friendly cuisine).
+    country_info_df['searchValue'] = country_info_df['Cuisines'].apply(
+        lambda cuisine: map_cuisine_name_to_searchValue(unicode(cuisine), cuisine_df))
 
-    # Similarly could calculate a 2nd metric where (for more than one allergen in profile) you drop one of the allergens
-    # at a time from the allergy profile to see the change/impact. The Eat Map could toggle between STRICT and RELAXED mode.
+    country_data_plt_df = country_info_df[['Country', 'Code', 'Cuisines', 'searchValue']]
 
-    def calculate_cuisine_allergy_indices(allergy_profile, cuisine_list):
-        allergy_index = []
-        ignore_cuisine = ['cuisine^cuisine-kid-friendly',
-                          'cuisine^cuisine-southern',
-                          'cuisine^cuisine-southwestern',
-                          'cuisine^cuisine-barbecue-bbq',
-                          'cuisine^cuisine-cajun']
-        for cuisine in cuisine_list:
-            if cuisine not in ignore_cuisine:
-                # First query total number of recipes for the cuisine
-                n_recipes_total = get_number_of_recipes_for_cuisine(cuisine, allergens='')
+    country_data_plt_df['allergy_index'] = country_data_plt_df['searchValue'].apply(
+        lambda searchValue: lookup_allergy_index_from_searchValue(searchValue, allergy_index_df))
 
-                # Then query number of recipes without allergens
-                n_recipes_allowed = get_number_of_recipes_for_cuisine(cuisine, allergy_profile)
-                allergy_index.append((cuisine, round(100. * float(n_recipes_allowed) / float(n_recipes_total), 1)))
+    country_data_plt_df['Code'] = country_data_plt_df['Code'].apply(lambda x: x.encode('ascii'))
 
-        return allergy_index
+    country_data_list = country_data_plt_df[['Code', 'allergy_index']].values.tolist()
 
     # ### Define static info
 
@@ -282,8 +345,7 @@ def eat_map():
 
     selected_profile = allergy_profiles[3][0]
 
-    # TODO: Remove above once passed through
-
+    # TODO: Remove above once passed through (need to convert index# to allergy list of ingredients)
 
     cuisine_df, cuisine_by_country_df = import_country_and_cuisine_info(xls_filepath, API_ID)
 
@@ -291,15 +353,167 @@ def eat_map():
 
     allergy_indices = calculate_cuisine_allergy_indices(selected_profile, cuisine_id)
 
-    # e.g. allergy_index = calculate_cuisine_allergy_indices('milk, egg', ['cuisine^cuisine-chinese'])
+    """
 
-    # TODO: Populate the country_data_for_map array with lookup from tables
+    country_data_list = [['AFG', 83.5],
+                         ['ALA', 26.3],
+                         ['DZA', 91.8],
+                         ['ASM', 55.8],
+                         ['AIA', 87.5],
+                         ['ATG', 87.5],
+                         ['ARG', 87.5],
+                         ['ABW', 87.5],
+                         ['AUS', 30.1],
+                         ['AUT', 45.6],
+                         ['BHS', 87.5],
+                         ['BGD', 90.3],
+                         ['BRB', 87.5],
+                         ['BEL', 39.2],
+                         ['BLZ', 86.9],
+                         ['BMU', 55.8],
+                         ['BOL', 87.5],
+                         ['BRA', 87.5],
+                         ['VGB', 87.5],
+                         ['BRN', 83.5],
+                         ['BGR', 71.8],
+                         ['KHM', 87.6],
+                         ['CAN', 55.8],
+                         ['CYM', 87.5],
+                         ['CHL', 87.5],
+                         ['CHN', 75.4],
+                         ['HKG', 75.4],
+                         ['MAC', 75.4],
+                         ['CXR', 30.1],
+                         ['CCK', 30.1],
+                         ['COL', 87.5],
+                         ['COK', 72.5],
+                         ['CRI', 86.9],
+                         ['CUB', 87.5],
+                         ['CYP', 79.5],
+                         ['CZE', 71.8],
+                         ['DNK', 26.3],
+                         ['DMA', 87.5],
+                         ['DOM', 87.5],
+                         ['ECU', 87.5],
+                         ['EGY', 91.8],
+                         ['SLV', 86.9],
+                         ['EST', 26.3],
+                         ['FLK', 30.1],
+                         ['FJI', 72.5],
+                         ['FIN', 26.3],
+                         ['FRA', 39.2],
+                         ['GUF', 87.5],
+                         ['PYF', 72.5],
+                         ['DEU', 45.6],
+                         ['GIB', 64.8],
+                         ['GRC', 79.5],
+                         ['GRL', 26.3],
+                         ['GRD', 87.5],
+                         ['GLP', 87.5],
+                         ['GUM', 55.8],
+                         ['GTM', 86.9],
+                         ['GGY', 30.1],
+                         ['GUY', 87.5],
+                         ['HTI', 87.5],
+                         ['VAT', 71.0],
+                         ['HND', 86.9],
+                         ['HUN', 71.8],
+                         ['ISL', 26.3],
+                         ['IND', 90.3],
+                         ['IDN', 87.6],
+                         ['IRL', 50.8],
+                         ['IMN', 30.1],
+                         ['ITA', 71.0],
+                         ['JAM', 87.5],
+                         ['JPN', 76.6],
+                         ['JEY', 30.1],
+                         ['KIR', 72.5],
+                         ['PRK', 75.4],
+                         ['KOR', 75.4],
+                         ['LAO', 87.6],
+                         ['LVA', 71.8],
+                         ['LBY', 91.8],
+                         ['LIE', 45.6],
+                         ['LTU', 71.8],
+                         ['LUX', 45.6],
+                         ['MKD', 79.5],
+                         ['MYS', 83.5],
+                         ['MDV', 90.3],
+                         ['MLT', 91.8],
+                         ['MHL', 72.5],
+                         ['MTQ', 87.5],
+                         ['MUS', 90.3],
+                         ['MEX', 86.9],
+                         ['FSM', 72.5],
+                         ['MCO', 39.2],
+                         ['MNG', 83.5],
+                         ['MSR', 87.5],
+                         ['MAR', 91.8],
+                         ['MMR', 87.6],
+                         ['NRU', 72.5],
+                         ['NPL', 90.3],
+                         ['NLD', 45.6],
+                         ['ANT', 87.5],
+                         ['NCL', 72.5],
+                         ['NZL', 30.1],
+                         ['NIC', 86.9],
+                         ['NIU', 72.5],
+                         ['NFK', 30.1],
+                         ['NOR', 26.3],
+                         ['PAK', 90.3],
+                         ['PLW', 72.5],
+                         ['PAN', 86.9],
+                         ['PNG', 72.5],
+                         ['PRY', 87.5],
+                         ['PER', 87.5],
+                         ['PHL', 83.5],
+                         ['PCN', 30.1],
+                         ['POL', 71.8],
+                         ['PRT', 64.8],
+                         ['PRI', 87.5],
+                         ['REU', 39.2],
+                         ['ROU', 71.8],
+                         ['BLM', 87.5],
+                         ['KNA', 87.5],
+                         ['LCA', 87.5],
+                         ['MAF', 87.5],
+                         ['VCT', 87.5],
+                         ['WSM', 72.5],
+                         ['SYC', 39.2],
+                         ['SGP', 75.4],
+                         ['SVK', 71.8],
+                         ['SVN', 71.8],
+                         ['SLB', 72.5],
+                         ['ZAF', 30.1],
+                         ['SSD', 91.8],
+                         ['ESP', 78.5],
+                         ['LKA', 90.3],
+                         ['SDN', 91.8],
+                         ['SUR', 87.5],
+                         ['SWE', 26.3],
+                         ['CHE', 39.2],
+                         ['TWN', 75.4],
+                         ['THA', 87.6],
+                         ['TLS', 72.5],
+                         ['TKL', 72.5],
+                         ['TON', 72.5],
+                         ['TTO', 87.5],
+                         ['TUN', 91.8],
+                         ['TUR', 87.6],
+                         ['TCA', 87.5],
+                         ['TUV', 72.5],
+                         ['GBR', 30.1],
+                         ['USA', 55.8],
+                         ['UMI', 55.8],
+                         ['URY', 87.5],
+                         ['VUT', 72.5],
+                         ['VEN', 87.5],
+                         ['VNM', 75.4],
+                         ['VIR', 55.8],
+                         ['WLF', 72.5],
+                         ['ESH', 91.8]]
 
-    # country_data_for_map = country_codes[['Code', 'AllergyIndex']].values.tolist()
-
-    country_data_for_map = None
-
-    return render_template('pages/eat_map.html', country_data=country_data_for_map)
+    return render_template('pages/eat_map.html', country_data=country_data_list)
 
 
 @app.route('/login')
@@ -334,6 +548,7 @@ def internal_error(error):
 def not_found_error(error):
     return render_template('errors/404.html'), 404
 
+
 if not app.debug:
     file_handler = FileHandler('error.log')
     file_handler.setFormatter(
@@ -358,38 +573,3 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
 '''
-
-# ----------------------------------------------------------------------------#
-# Left over prototyping code
-# ----------------------------------------------------------------------------#
-
-
-## This was code to put random values into the country data array for the country map
-
-# csv_filepath = APP_STATIC + '/data/country_info.csv'
-
-# seed(42)      # Set a constant starting seed
-
-# country_codes = pd.read_csv(csv_filepath, header=0, names={'Country', 'Code'})
-
-# country_codes['AllergyIndex'] = country_codes['Code'].apply(lambda x: randint(0, len(country_codes)))
-
-# country_data_for_map = country_codes[['Code', 'AllergyIndex']].values.tolist()
-# country_data = [
-#     ["BLR", 75], ["BLZ", 43], ["RUS", 50], ["RWA", 88], ["SRB", 21], ["TLS", 43],
-#     ["REU", 21], ["TKM", 19], ["TJK", 60], ["ROU", 4], ["TKL", 44], ["GNB", 38],
-#     ["GUM", 67], ["GTM", 2], ["SGS", 95], ["GRC", 60], ["GNQ", 57], ["GLP", 53],
-#     ["JPN", 59], ["GUY", 24], ["GGY", 4], ["GUF", 21], ["GEO", 42], ["GRD", 65],
-#     ["GBR", 14], ["GAB", 47], ["SLV", 15], ["GIN", 19], ["GMB", 63], ["GRL", 56],
-#     ["ERI", 57], ["MNE", 93], ["MDA", 39], ["MDG", 71], ["MAF", 16], ["MAR", 8],
-#     ["MCO", 25], ["UZB", 81], ["MMR", 21], ["MLI", 95], ["MAC", 33], ["MNG", 93],
-#     ["MHL", 15], ["MKD", 52], ["MUS", 19], ["MLT", 69], ["MWI", 37], ["MDV", 44],
-#     ["MTQ", 13], ["MNP", 21], ["MSR", 89], ["MRT", 20], ["IMN", 72], ["UGA", 59],
-#     ["TZA", 62], ["MYS", 75], ["MEX", 80], ["ISR", 77], ["FRA", 54], ["IOT", 56],
-#     ["SHN", 91], ["FIN", 51], ["FJI", 22], ["FLK", 4], ["FSM", 69], ["FRO", 70],
-#     ["NIC", 66], ["NLD", 53], ["NOR", 7], ["NAM", 63], ["VUT", 15], ["NCL", 66],
-#     ["NER", 34], ["NFK", 33], ["NGA", 45], ["AUS", 96], ["NPL", 21], ["NRU", 13],
-#     ["NIU", 6], ["COK", 19], ["XKX", 32], ["CIV", 27], ["CHE", 65], ["COL", 64],
-#     ["CHN", 16], ["CMR", 70], ["CHL", 15], ["CCK", 85], ["CAN", 76], ["COG", 20],
-#     ["CAF", 93], ["COD", 36], ["CZE", 77], ["CYP", 65], ["CXR", 14], ["CRI", 31],
-#     ["CUW", 67], ["CPV", 63], ["CUB", 40], ["SWZ", 58], ["SYR", 96], ["SXM", 31]]

@@ -1,16 +1,18 @@
 {% extends 'layouts/main.html' %}
-{% block title %}Home{% endblock %}
+{% block title %}Top 15{% endblock %}
 {% block content %}
 
+
     <div class="page-header">
-        <h1>Top 10 Results</h1>
-    </div>
-    <div>
-        <p class="lead">
-        <h3>Allergy profile + recipe data <code>=></code> TripAdvisor-like cuisine recommendations</h3></p>
+        <h1>Top 15 Recommended Destinations</h1>
     </div>
 
-    <p class="lead"><code>Empowering those with food allergies to participate and
-        engage confidently in their world.</code>.</p>
+
+    <div id="container1" style="border:1px blue; width: 700px; height: 475px; position: relative;">{{ plot_div|safe }}</div>
+
+    {{ js_resources|indent(4)|safe }}
+    {{ css_resources|indent(4)|safe }}
+    {{ plot_script|indent(4)|safe }}
 
 {% endblock %}
+

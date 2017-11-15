@@ -56,8 +56,8 @@
                     </li>
                     <li {% if request.endpoint == 'eat_map' %} class="active" {% endif %}><a
                             href="{{ url_for('eat_map') }}">Eat Map</a></li>
-                    <li {% if request.endpoint == 'bokeh' %} class="active" {% endif %}><a
-                            href="{{ url_for('bokeh') }}">Visualisation</a></li>
+                    <li {% if request.endpoint == 'top10' %} class="active" {% endif %}><a
+                            href="{{ url_for('top10') }}">Top 15</a></li>
                     <li {% if request.endpoint == 'allergy_info' %} class="active" {% endif %}><a
                             href="{{ url_for('allergy_info') }}">Allergy info</a></li>
                     <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a
