@@ -25,9 +25,12 @@ from yummly.models import MetaCuisine
 ### Bokeh imports
 
 #from bokeh.embed import components
-from bokeh.resources import INLINE
-from bokeh.plotting import figure
-from bokeh import embed
+## from bokeh.resources import INLINE
+#from bokeh.plotting import figure
+
+from bokeh import embed, resources, plotting
+
+# bokeh.resources import INLINE
 
 # from bokeh.charts import Bar    # -- NOTE: bkcharts is no longer maintained - do not use!
 
@@ -142,7 +145,7 @@ def top10():
         #plot_top15 = Bar(top15_list_df, label='Country', values='allergy_index', legend=False)
         #plot_top15.add_labels('y', 'Allergy Index')
 
-        p = figure(x_range=top15_list_df.Country.values.tolist(), plot_height=450, title="")
+        p = plotting.figure(x_range=top15_list_df.Country.values.tolist(), plot_height=450, title="")
 
         p.vbar(x=top15_list_df.Country.values.tolist(), top=top15_list_df.allergy_index.values, width=0.9)
 
@@ -156,8 +159,8 @@ def top10():
     except Exception as e:
         return render_template('errors/bokeh_error.html', error=e.message)
 
-    js_resources = INLINE.render_js()
-    css_resources = INLINE.render_css()
+    js_resources = resources.INLINE.render_js()
+    css_resources = resources.INLINE.render_css()
 
     return render_template('pages/top10.html',
                            plot_script=script,
