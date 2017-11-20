@@ -24,9 +24,11 @@ from yummly.models import MetaCuisine
 
 ### Bokeh imports
 
-from bokeh.embed import components
+#from bokeh.embed import components
 from bokeh.resources import INLINE
 from bokeh.plotting import figure
+from bokeh import embed
+
 # from bokeh.charts import Bar    # -- NOTE: bkcharts is no longer maintained - do not use!
 
 ### Unused
@@ -149,7 +151,7 @@ def top10():
         p.y_range.start = 0
         p.y_range.end = 100
 
-        script, div = components(p)
+        script, div = embed.components(p)
 
     except Exception as e:
         return render_template('errors/bokeh_error.html', error=e.message)
