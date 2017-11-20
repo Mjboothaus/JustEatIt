@@ -14,6 +14,7 @@ import os
 import pandas as pd
 from logging import Formatter, FileHandler
 import logging
+from math import pi
 
 ### Yummly
 
@@ -26,7 +27,7 @@ from yummly.models import MetaCuisine
 from bokeh.embed import components
 from bokeh.resources import INLINE
 from bokeh.plotting import figure
-from bokeh.charts import Bar
+# from bokeh.charts import Bar    # -- NOTE: bkcharts is no longer maintained - do not use!
 
 ### Unused
 
@@ -136,11 +137,19 @@ def top10():
         top15_list_df = pd.DataFrame(top15_list)
         top15_list_df.columns = ['Country', 'Code', 'Cuisines', 'searchValue', 'allergy_index']
 
-        plot_top15 = Bar(top15_list_df, label='Country', values='allergy_index', legend=False)
+        #plot_top15 = Bar(top15_list_df, label='Country', values='allergy_index', legend=False)
+        #plot_top15.add_labels('y', 'Allergy Index')
 
-        plot_top15.add_labels('y', 'Allergy Index')
+        p = figure(x_range=top15_list_df.Country.values.tolist(), plot_height=450, title="")
 
-        script, div = components(plot_top15)
+        p.vbar(x=top15_list_df.Country.values.tolist(), top=top15_list_df.allergy_index.values, width=0.9)
+
+        p.xaxis.major_label_orientation = pi / 2
+        p.xgrid.grid_line_color = None
+        p.y_range.start = 0
+        p.y_range.end = 100
+
+        script, div = components(p)
 
     except Exception as e:
         return render_template('errors/bokeh_error.html', error=e.message)
